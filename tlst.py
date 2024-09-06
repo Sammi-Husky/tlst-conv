@@ -94,32 +94,22 @@ class TLSTEntry:
     """Represents a single track entry in a TLST file"""
 
     def __init__(self) -> None:
-        self.songId = 0
-        self.delay = 0
-        self.volume = 0
-        self.frequency = 0
-        self.switch = 0
-        self.disablePinch = False
-        self.disableTlstInclusion = False
-        self.title = ""
-        self.filename = ""
-
-    songId: int
-    delay: int
-    volume: int
-    frequency: int
-    switch: int
-    disablePinch: bool
-    disableTlstInclusion: bool
-    title: str
-    filename: str
+        self.songId: int = 0
+        self.delay: int = 0
+        self.volume: int = 0
+        self.frequency: int = 0
+        self.switch: int = 0
+        self.disablePinch: bool = False
+        self.disableTlstInclusion: bool = False
+        self.title: str = ""
+        self.filename: str = ""
 
 
 class TLST:
     """Represents a TLST file"""
 
     def __init__(self) -> None:
-        self.tracks = []
+        self.tracks: list[TLSTEntry] = []
 
     @staticmethod
     def fromJson(path: str) -> TLST:
@@ -137,7 +127,6 @@ class TLST:
     def fromTlst(path: str) -> TLST:
         with open(path, "rb") as f:
             tlst = TLST()
-            entries = []
 
             # skip magic
             f.seek(0x4, io.SEEK_SET)
@@ -177,11 +166,10 @@ class TLST:
                     f.seek(filenameOffset + stringsOffset, io.SEEK_SET)
                     entry.filename = readNTString(f)
 
-                entries.append(entry)
+                tlst.tracks.append(entry)
                 if f.tell() == f.seek(0, io.SEEK_END):
                     break
 
-            tlst.tracks = entries
             return tlst
 
     def toTlst(self, path: str) -> None:
